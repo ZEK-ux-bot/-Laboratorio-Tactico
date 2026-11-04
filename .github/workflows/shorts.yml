@@ -35,6 +35,7 @@ jobs:
       YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
       YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
       YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      SUBIR_BORRADOR_YOUTUBE: ${{ vars.SUBIR_BORRADOR_YOUTUBE }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -71,7 +72,7 @@ jobs:
         if: steps.gate.outputs.mode == 'full'
         run: python src/automation.py --mode full --size 1080x1920 --fps 30
       - name: Subir borradores privados a YouTube (opcional)
-        if: steps.gate.outputs.mode == 'full' && env.YOUTUBE_REFRESH_TOKEN != '' && env.YOUTUBE_CLIENT_ID != '' && env.YOUTUBE_CLIENT_SECRET != ''
+        if: steps.gate.outputs.mode == 'full' && env.SUBIR_BORRADOR_YOUTUBE == 'SI' && env.YOUTUBE_REFRESH_TOKEN != '' && env.YOUTUBE_CLIENT_ID != '' && env.YOUTUBE_CLIENT_SECRET != ''
         run: python src/upload_private_youtube.py output/short_sin_marca.mp4 output/descripcion_youtube.txt
       - name: Guardar el MP4, guion, cinco ideas y fuentes
         if: always() && steps.gate.outputs.mode != 'skip'
