@@ -89,3 +89,14 @@ GitHub Actions (3x/semana)
 **Por qué no usamos clips generativos:** los movimientos exactos de un partido no pueden reproducirse fielmente solo con una descripción de texto. Una pizarra ilustrativa bien etiquetada enseña principios sin presentar ficción como observación.
 
 **Próximas mejoras opcionales:** almacenar historial de temas para evitar duplicados, alinear subtítulos con timestamps reales si API los entrega, transiciones más finas, panel de revisión y publicación multicanal OAuth.
+
+## Estado de instalación — 4 de noviembre de 2026
+
+- Este repositorio YA contiene el código del proyecto, renderizador, plantilla de muestra, pruebas y workflow. Está **público**: no incluyas secretos, tokens, clips licenciados ni datos privados.
+- Se han ejecutado cinco pruebas locales y la demo genera MP4 sin marca de agua. La ejecución en GitHub Actions todavía no se ha comprobado; haz un primer Run workflow con `demo=true`.
+- El flujo programado de lunes, miércoles y viernes a las 9:15 h de Ciudad de México se detiene sin cobrar si no están configurados `OPENAI_API_KEY`, `HEYGEN_API_KEY` y la variable `GENERACION_PAGADA_AUTORIZADA=SI`.
+- **Compatibilidad de Emiliano:** la voz aprobada está clasificada como `orca` en la conexión HeyGen disponible. El API público `/v3/voices/speech` documenta voces compatibles con `starfish`, por lo que **no se ha demostrado que Emiliano funcione mediante esa API**. Hasta verificar ese requisito o acordar una alternativa, NO actives la generación de pago. No hay sustitución automática de voces.
+- La validación de partidos es mínima, no hay seguimiento de jugadores ni revisión automática de secuencias completas. Los videos deben revisarse antes de su publicación pública.
+- La API de OpenAI y la de HeyGen pueden tener costos adicionales distintos de las suscripciones al chat.
+
+Detalles de la API HeyGen: https://www.heygen.com/blog/heygen-api-guide
