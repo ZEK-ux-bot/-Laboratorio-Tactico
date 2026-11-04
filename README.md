@@ -36,11 +36,11 @@ python src/automation.py --mode demo --voice-file /ruta/a/emiliano.wav --size 10
 
 ## Instalar la automatización en GitHub (una sola vez)
 
-1. Repositorio de trabajo: `ZEK-ux-bot/-Laboratorio-Tactico` (actualmente público). NO guardes secretos ni credenciales en archivos del repositorio. La subida de archivos debe completarse antes de ejecutar el workflow.
+1. Proyecto instalado en el repositorio `ZEK-ux-bot/-Laboratorio-Tactico`, creado como **público**. Si quieres guardar cualquier información de producción privada, hazlo privado desde Settings → General → Danger Zone. Nunca subas claves, tokens ni videos con derechos al código.
 2. En **Settings → Secrets and variables → Actions**, crea estos secrets: `OPENAI_API_KEY`, `HEYGEN_API_KEY`. Conecta la cuenta de pago/API que tenga derecho a voz Emiliano y los permisos necesarios. Nunca pegues claves en código ni en el chat.
 3. En **Variables**, establece `GENERACION_PAGADA_AUTORIZADA=SI` solamente cuando hayas definido un presupuesto de uso de las APIs. Dejar esa variable vacía significa **no ejecutar ninguna tarea de pago**. Tu suscripción a ChatGPT no es crédito de OpenAI API.
 4. Opcional para borradores automáticos privados de YouTube: secrets `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REFRESH_TOKEN`, obtenidos por OAuth con permiso `youtube.upload`. Nunca configurar credenciales de publicación públicas por defecto.
-5. En **Actions → Laboratorio Táctico · Shorts automáticos → Run workflow**, ejecuta `demo=true` primero. El resultado estará en **Artifacts**. Cuando lo hayas probado y configurado los secretos, el horario regular empezará a producir.
+5. Un **push de código** inicia una prueba DEMO sin coste, y **Actions → Laboratorio Táctico · Shorts automáticos → Run workflow** con `demo=true` permite repetirla. Descarga el resultado desde **Artifacts**. Las ejecuciones programadas no producen ni generan gastos mientras no se cumplan todos los requisitos de claves y autorización.
 
 ## Horario
 
@@ -72,7 +72,7 @@ GitHub Actions (3x/semana)
 - Siempre distingue hechos oficiales de explicaciones tentativas; etiqueta la pizarra como ilustrativa.
 - Las fuentes oficiales son un requisito necesario, pero no suficiente para asegurar que las inferencias causales sean ciertas. No publicar a ciegas.
 - No incorpora fotos ni metraje televisivo protegido por derechos por defecto.
-- La función de voz requiere autenticación y posiblemente saldo/pago. Si el proveedor rechaza la voz/endpoint/plan, se detiene sin reemplazarla o intentar muchas regeneraciones.
+- La función de voz requiere autenticación y posiblemente saldo/pago. La voz Emiliano se ha probado en la app, pero todavía NO se ha validado la integración directa de API con esa voz. Si el proveedor rechaza la voz/endpoint/plan, se detiene sin reemplazarla o intentar muchas regeneraciones.
 - Los subtítulos se sincronizan de forma **estimada** por cantidad de caracteres: no son marcas reales de tiempos de las palabras. Revisar una vez reproducidos.
 - GitHub puede cobrar minutos/almacenamiento según el plan y el tipo de repositorio. La API de investigación y la voz se cobran por separado según sus tarifas. No hay tope monetario garantizado por este proyecto: antes de activar gastos, configura límites/alertas en los proveedores.
 - La **publicación pública** requiere conectar y autorizar cada plataforma (YouTube/Instagram/TikTok) y revisar derechos y veracidad. Este proyecto la deja intencionadamente desactivada.
@@ -89,14 +89,3 @@ GitHub Actions (3x/semana)
 **Por qué no usamos clips generativos:** los movimientos exactos de un partido no pueden reproducirse fielmente solo con una descripción de texto. Una pizarra ilustrativa bien etiquetada enseña principios sin presentar ficción como observación.
 
 **Próximas mejoras opcionales:** almacenar historial de temas para evitar duplicados, alinear subtítulos con timestamps reales si API los entrega, transiciones más finas, panel de revisión y publicación multicanal OAuth.
-
-## Estado de instalación — 4 de noviembre de 2026
-
-- Este repositorio YA contiene el código del proyecto, renderizador, plantilla de muestra, pruebas y workflow. Está **público**: no incluyas secretos, tokens, clips licenciados ni datos privados.
-- Se han ejecutado cinco pruebas locales y la demo genera MP4 sin marca de agua. La ejecución en GitHub Actions todavía no se ha comprobado; haz un primer Run workflow con `demo=true`.
-- El flujo programado de lunes, miércoles y viernes a las 9:15 h de Ciudad de México se detiene sin cobrar si no están configurados `OPENAI_API_KEY`, `HEYGEN_API_KEY` y la variable `GENERACION_PAGADA_AUTORIZADA=SI`.
-- **Compatibilidad de Emiliano:** la voz aprobada está clasificada como `orca` en la conexión HeyGen disponible. El API público `/v3/voices/speech` documenta voces compatibles con `starfish`, por lo que **no se ha demostrado que Emiliano funcione mediante esa API**. Hasta verificar ese requisito o acordar una alternativa, NO actives la generación de pago. No hay sustitución automática de voces.
-- La validación de partidos es mínima, no hay seguimiento de jugadores ni revisión automática de secuencias completas. Los videos deben revisarse antes de su publicación pública.
-- La API de OpenAI y la de HeyGen pueden tener costos adicionales distintos de las suscripciones al chat.
-
-Detalles de la API HeyGen: https://www.heygen.com/blog/heygen-api-guide
