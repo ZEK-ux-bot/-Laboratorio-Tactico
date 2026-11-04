@@ -89,3 +89,19 @@ GitHub Actions (3x/semana)
 **Por qué no usamos clips generativos:** los movimientos exactos de un partido no pueden reproducirse fielmente solo con una descripción de texto. Una pizarra ilustrativa bien etiquetada enseña principios sin presentar ficción como observación.
 
 **Próximas mejoras opcionales:** almacenar historial de temas para evitar duplicados, alinear subtítulos con timestamps reales si API los entrega, transiciones más finas, panel de revisión y publicación multicanal OAuth.
+
+
+## Estado de compatibilidad de voz (noviembre de 2026)
+
+La integración utiliza POST https://api.heygen.com/v3/voices/speech para generar una narración. Esta API requiere voces compatibles con starfish. La voz Emiliano seleccionada en la app figuraba como orca, por lo que su uso desde la API v3 no está confirmado. El programa detiene la ejecución si la voz es rechazada: NO cambia la voz por otra sin autorización.
+
+## Pasos para activar una ejecución completa
+
+1. Crear una clave de OpenAI API (https://platform.openai.com/api-keys) y una clave de HeyGen de tu cuenta.
+2. En GitHub > Settings > Secrets and variables > Actions, guardar los secretos OPENAI_API_KEY y HEYGEN_API_KEY. Nunca subirlos al repositorio ni enviarlos por chat.
+3. Configurar límites de gasto y alertas en ambos proveedores. Este proyecto por sí solo no impone un tope monetario verificable.
+4. Solo después de aprobar el presupuesto, añadir la variable GENERACION_PAGADA_AUTORIZADA con valor SI. Sin ella el workflow omite llamadas de pago.
+5. En Actions ejecutar manualmente el workflow con demo=true para revisar el funcionamiento sin claves ni gastos; demo=false habilita el modo completo únicamente si hay secretos y aprobación.
+6. Opcionalmente, para subir borradores PRIVADOS de YouTube, añadir los secretos OAuth de YouTube y la variable SUBIR_BORRADOR_YOUTUBE=SI. Esta opción está desactivada por defecto, y no existe publicación pública automática.
+
+El sistema exporta video original sin marca de agua, pero sus diagramas son ilustrativos; se requiere revisión editorial de hechos, animaciones y subtítulos antes de publicar. Instagram y TikTok aún no están integrados. La API se factura por separado de ChatGPT Plus.
