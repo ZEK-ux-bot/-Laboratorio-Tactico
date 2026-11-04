@@ -1,9 +1,17 @@
 name: Laboratorio Táctico · Shorts automáticos
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/shorts.yml"
+      - "src/**"
+      - "examples/**"
+      - "tests/**"
+      - "requirements.txt"
   workflow_dispatch:
     inputs:
       demo:
-        description: 'Prueba gratuita sin APIs (true/false)'
+        description: 'Demo local sin gastos ni APIs (true/false)'
         required: false
         default: 'true'
   schedule:
@@ -20,7 +28,7 @@ jobs:
     timeout-minutes: 90
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      OPENAI_MODEL: gpt-6-astra
+      OPENAI_MODEL: gpt-5.4-mini
       HEYGEN_API_KEY: ${{ secrets.HEYGEN_API_KEY }}
       HEYGEN_VOICE_ID: 70bc24b8126c446c8cf50fc1a01eb834
       GENERACION_PAGADA_AUTORIZADA: ${{ vars.GENERACION_PAGADA_AUTORIZADA }}
@@ -33,34 +41,39 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-      - name: Instalar FFmpeg y Python
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
-          python -m pip install -r requirements.txt
-      - name: Ejecutar pruebas
-        run: python -m unittest discover -s tests -v
-      - name: Evitar gastos sin autorización
+      - name: Evitar gastos no autorizados
         id: gate
         run: |
-          if [ '${{ github.event_name }}' = 'workflow_dispatch' ] && [ '${{ inputs.demo }}' = 'true' ]; then
+          if [ '${{ github.event_name }}' = 'push' ] || { [ '${{ github.event_name }}' = 'workflow_dispatch' ] && [ '${{ inputs.demo }}' = 'true' ]; }; then
             echo 'mode=demo' >> "$GITHUB_OUTPUT"
           elif [ "$GENERACION_PAGADA_AUTORIZADA" = 'SI' ] && [ -n "$OPENAI_API_KEY" ] && [ -n "$HEYGEN_API_KEY" ]; then
             echo 'mode=full' >> "$GITHUB_OUTPUT"
           else
             echo 'mode=skip' >> "$GITHUB_OUTPUT"
-            echo 'Faltan secretos o permiso de gasto. Ejecución sin coste de APIs.'
+            echo 'Faltan claves o autorización de gasto; no se genera ni se cobra.'
           fi
-      - name: Demostración sin gasto
+      - name: Instalar dependencia FFmpeg + Python
+        if: steps.gate.outputs.mode != 'skip'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          pip install -r requirements.txt
+      - name: Probar módulo sin APIs
+        if: steps.gate.outputs.mode != 'skip'
+        run: python -m unittest discover -s tests -v
+      - name: Crear demo sin coste
         if: steps.gate.outputs.mode == 'demo'
-        run: python src/automation.py --mode demo --size 360x640 --fps 15
-      - name: Producción original HD sin marca de agua
+        run: |
+          python src/automation.py --mode demo --size 360x640 --fps 15
+          test -s output/short_sin_marca.mp4
+          ffprobe -v error -show_entries stream=width,height -of csv=p=0 output/short_sin_marca.mp4
+      - name: Crear Short completo sin marca de agua
         if: steps.gate.outputs.mode == 'full'
         run: python src/automation.py --mode full --size 1080x1920 --fps 30
-      - name: Subir video privado a YouTube (si autorizado)
+      - name: Subir borradores privados a YouTube (opcional)
         if: steps.gate.outputs.mode == 'full' && env.YOUTUBE_REFRESH_TOKEN != '' && env.YOUTUBE_CLIENT_ID != '' && env.YOUTUBE_CLIENT_SECRET != ''
         run: python src/upload_private_youtube.py output/short_sin_marca.mp4 output/descripcion_youtube.txt
-      - name: Conservar video, fuentes y guion
+      - name: Guardar el MP4, guion, cinco ideas y fuentes
         if: always() && steps.gate.outputs.mode != 'skip'
         uses: actions/upload-artifact@v4
         with:
