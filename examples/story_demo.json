@@ -1,0 +1,62 @@
+{
+  "project_name": "LABORATORIO TACTICO",
+  "video_title": "¿CÓMO ROMPER UN BLOQUE BAJO?",
+  "eyebrow": "PIZARRA TÁCTICA · EP. 01",
+  "disclaimer": "SIMULACIÓN DIDÁCTICA · NO CORRESPONDE A UN PARTIDO REAL",
+  "format": "shorts_9_16",
+  "sources": [],
+  "verified_match": false,
+  "narration": "Cuando un equipo cierra el centro, no basta con pasar de lado a lado. Primero, el extremo fija al lateral y abre distancia. Después, un interior atrae a su marcador. El tercer hombre encuentra el espacio que se acaba de crear. La clave no es correr más, sino mover al rival antes de acelerar.",
+  "teams": {"attack": "AZUL · CON BALÓN", "defense": "DORADO · SIN BALÓN"},
+  "scenes": [
+    {
+      "duration": 4.0,
+      "label": "01 / PROBLEMA",
+      "headline": "CENTRO CERRADO",
+      "caption": "EL RIVAL PROTEGE EL PASILLO CENTRAL",
+      "attack": [[0.50,0.83,"5"],[0.26,0.70,"3"],[0.76,0.70,"2"],[0.46,0.62,"8"],[0.25,0.46,"11"],[0.78,0.43,"7"],[0.52,0.34,"9"]],
+      "defense": [[0.24,0.26,"4"],[0.42,0.26,"5"],[0.60,0.26,"6"],[0.78,0.26,"2"],[0.28,0.40,"11"],[0.45,0.40,"8"],[0.61,0.40,"6"],[0.78,0.40,"7"]],
+      "arrows": [], "focus": ["8"], "ball": [0.50,0.83], "insight": "BLOQUE COMPACTO"
+    },
+    {
+      "duration": 4.2,
+      "label": "02 / FIJAR",
+      "headline": "ABRE EL CAMPO",
+      "caption": "EL EXTREMO FIJA Y ESTIRA LA DEFENSA",
+      "attack": [[0.50,0.83,"5"],[0.26,0.70,"3"],[0.76,0.70,"2"],[0.48,0.59,"8"],[0.14,0.43,"11"],[0.90,0.37,"7"],[0.52,0.34,"9"]],
+      "defense": [[0.24,0.26,"4"],[0.42,0.26,"5"],[0.60,0.26,"6"],[0.82,0.26,"2"],[0.22,0.40,"11"],[0.45,0.40,"8"],[0.61,0.40,"6"],[0.83,0.40,"7"]],
+      "arrows": [{"from":[0.78,0.43],"to":[0.90,0.37],"kind":"run"},{"from":[0.50,0.83],"to":[0.48,0.59],"kind":"pass"}],
+      "focus": ["7"], "ball": [0.48,0.59], "insight": "FIJACIÓN EXTERIOR"
+    },
+    {
+      "duration": 4.2,
+      "label": "03 / ATRAER",
+      "headline": "ACTIVA AL INTERIOR",
+      "caption": "EL PASE INTERIOR ARRASTRA LA PRESIÓN",
+      "attack": [[0.50,0.83,"5"],[0.26,0.70,"3"],[0.76,0.70,"2"],[0.48,0.55,"8"],[0.21,0.43,"11"],[0.90,0.37,"7"],[0.55,0.34,"9"]],
+      "defense": [[0.24,0.26,"4"],[0.42,0.26,"5"],[0.60,0.26,"6"],[0.82,0.26,"2"],[0.24,0.43,"11"],[0.47,0.48,"8"],[0.63,0.41,"6"],[0.83,0.40,"7"]],
+      "arrows": [{"from":[0.48,0.55],"to":[0.55,0.34],"kind":"pass"},{"from":[0.45,0.40],"to":[0.47,0.48],"kind":"defense"}],
+      "focus": ["8","9"], "ball": [0.55,0.34], "insight": "ARRASTRE DEL MARCADOR"
+    },
+    {
+      "duration": 4.2,
+      "label": "04 / ROMPER",
+      "headline": "TERCER HOMBRE",
+      "caption": "EL JUGADOR LIBRE ATACA EL ESPACIO",
+      "attack": [[0.50,0.83,"5"],[0.26,0.70,"3"],[0.76,0.70,"2"],[0.48,0.55,"8"],[0.21,0.43,"11"],[0.84,0.20,"7"],[0.55,0.34,"9"]],
+      "defense": [[0.24,0.26,"4"],[0.42,0.26,"5"],[0.60,0.26,"6"],[0.79,0.26,"2"],[0.24,0.43,"11"],[0.47,0.48,"8"],[0.63,0.41,"6"],[0.80,0.40,"7"]],
+      "arrows": [{"from":[0.55,0.34],"to":[0.84,0.20],"kind":"pass"},{"from":[0.90,0.37],"to":[0.84,0.20],"kind":"run"}],
+      "focus": ["7"], "ball": [0.84,0.20], "insight": "HOMBRE LIBRE"
+    },
+    {
+      "duration": 4.0,
+      "label": "05 / CONCLUSIÓN",
+      "headline": "MUEVE AL RIVAL",
+      "caption": "ATRAER · FIJAR · SOLTAR",
+      "attack": [[0.50,0.83,"5"],[0.26,0.70,"3"],[0.76,0.70,"2"],[0.48,0.55,"8"],[0.21,0.43,"11"],[0.84,0.20,"7"],[0.55,0.34,"9"]],
+      "defense": [[0.24,0.26,"4"],[0.42,0.26,"5"],[0.60,0.26,"6"],[0.79,0.26,"2"],[0.24,0.43,"11"],[0.47,0.48,"8"],[0.63,0.41,"6"],[0.80,0.40,"7"]],
+      "arrows": [{"from":[0.48,0.55],"to":[0.55,0.34],"kind":"pass"},{"from":[0.55,0.34],"to":[0.84,0.20],"kind":"pass"}],
+      "focus": ["7","8","9"], "ball": [0.84,0.20], "insight": "NO ES CORRER MÁS"
+    }
+  ]
+}
