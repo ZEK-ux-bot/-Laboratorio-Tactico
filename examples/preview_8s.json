@@ -1,0 +1,217 @@
+{
+  "project_name": "LABORATORIO TÁCTICO",
+  "video_title": "PSG 6-0 · 4 GOLES EN 17 MIN",
+  "format": "shorts_9_16",
+  "verified_match": false,
+  "sources": [
+    "https://www.psg.fr/es/content/cronica-el-paris-saint-germain-consigue-una-victoria-record-ante-villarreal-cf-uefa-champions-league-2026-2027",
+    "https://www.psg.fr/es/partidas/futbol-masculino/20262027/villarreal-vs-paris-2026-11-03",
+    "https://villarrealcf.es/es/derrota-ante-el-psg/"
+  ],
+  "narration": "¿Vieron lo que hizo el PSG contra el Villarreal? Le metió seis, sí, pero fíjate en esto: para el minuto diecisiete, ya llevaba cuatro. ¿Fue solamente que entró todo? Pues no exactamente. El primero viene de un córner: Pacho desvía la pelota y João Neves está listo para rematar. Tres minutos después, el PSG aprieta arriba, recupera y Akliouche encuentra a Doué para el segundo. Aquí está el detalle: cuando pierdes la pelota en una salida complicada, a veces ni siquiera alcanzas a acomodar la defensa. En el trece, Neves remata, Renato Veiga bloquea y Mayulu aprovecha el rebote. Y al diecisiete, otra asistencia de Akliouche termina en gol de Fabián Ruiz. Ojo: no todos esos goles salieron de la misma presión. Hubo un córner, un rebote y ataques que castigaron momentos distintos. ¿Tú con qué te quedas: con la presión o con cómo definió?",
+  "disclaimer": "ILUSTRACIÓN · POSICIONES NO EXACTAS",
+  "teams": {
+    "attack": "AZUL · ATAQUE",
+    "defense": "AMARILLO · DEFENSA"
+  },
+  "scenes": [
+    {
+      "attack": [
+        [
+          0.5,
+          0.83,
+          "5"
+        ],
+        [
+          0.26,
+          0.7,
+          "3"
+        ],
+        [
+          0.76,
+          0.7,
+          "2"
+        ],
+        [
+          0.46,
+          0.62,
+          "8"
+        ],
+        [
+          0.25,
+          0.46,
+          "11"
+        ],
+        [
+          0.78,
+          0.43,
+          "7"
+        ],
+        [
+          0.52,
+          0.34,
+          "9"
+        ]
+      ],
+      "defense": [
+        [
+          0.24,
+          0.26,
+          "4"
+        ],
+        [
+          0.42,
+          0.26,
+          "5"
+        ],
+        [
+          0.6,
+          0.26,
+          "6"
+        ],
+        [
+          0.78,
+          0.26,
+          "2"
+        ],
+        [
+          0.28,
+          0.4,
+          "11"
+        ],
+        [
+          0.45,
+          0.4,
+          "8"
+        ],
+        [
+          0.61,
+          0.4,
+          "6"
+        ],
+        [
+          0.78,
+          0.4,
+          "7"
+        ]
+      ],
+      "arrows": [],
+      "focus": [],
+      "ball": [
+        0.5,
+        0.83
+      ],
+      "duration": 4,
+      "label": "CHAMPIONS · 3 NOV",
+      "headline": "CUATRO TAN RÁPIDO",
+      "caption": "PSG 6 · VILLARREAL 0",
+      "insight": "17 MINUTOS DECISIVOS"
+    },
+    {
+      "attack": [
+        [
+          0.5,
+          0.83,
+          "5"
+        ],
+        [
+          0.26,
+          0.7,
+          "3"
+        ],
+        [
+          0.76,
+          0.7,
+          "2"
+        ],
+        [
+          0.46,
+          0.62,
+          "8"
+        ],
+        [
+          0.25,
+          0.46,
+          "11"
+        ],
+        [
+          0.78,
+          0.43,
+          "7"
+        ],
+        [
+          0.52,
+          0.34,
+          "9"
+        ]
+      ],
+      "defense": [
+        [
+          0.24,
+          0.26,
+          "4"
+        ],
+        [
+          0.42,
+          0.26,
+          "5"
+        ],
+        [
+          0.6,
+          0.26,
+          "6"
+        ],
+        [
+          0.78,
+          0.26,
+          "2"
+        ],
+        [
+          0.28,
+          0.4,
+          "11"
+        ],
+        [
+          0.45,
+          0.4,
+          "8"
+        ],
+        [
+          0.61,
+          0.4,
+          "6"
+        ],
+        [
+          0.78,
+          0.4,
+          "7"
+        ]
+      ],
+      "arrows": [
+        {
+          "from": [
+            0.12,
+            0.12
+          ],
+          "to": [
+            0.5,
+            0.25
+          ],
+          "kind": "pass"
+        }
+      ],
+      "focus": [
+        "9"
+      ],
+      "ball": [
+        0.12,
+        0.12
+      ],
+      "duration": 4,
+      "label": "GOL 01",
+      "headline": "PRIMER GOL",
+      "caption": "NEVES APROVECHA EL CÓRNER",
+      "insight": "MINUTO 09 · BALÓN PARADO"
+    }
+  ]
+}
