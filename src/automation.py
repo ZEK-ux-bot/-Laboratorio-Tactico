@@ -92,7 +92,7 @@ def research()->dict:
     # Un solo ciclo de investigación con búsqueda web.
     client=OpenAI()
     result=client.responses.create(
-       model=os.getenv('OPENAI_MODEL','gpt-6-astra'),
+       model=os.getenv('OPENAI_MODEL','gpt-5.4-mini'),
        tools=[{'type':'web_search'}],
        tool_choice='required',
        instructions=SYSTEM_PROMPT,
@@ -171,8 +171,8 @@ def get_audio(text:str,out:Path)->dict:
     if os.getenv('GENERACION_PAGADA_AUTORIZADA')!='SI':
         raise PipelineError('Producción detenida: GENERACION_PAGADA_AUTORIZADA no es SI')
     import requests
-    # La API pública v3 exige una voz compatible; Emiliano (orca) puede estar restringido.\n    # No sustituimos voces automáticamente ni generamos una segunda solicitud.
-    url=os.getenv('HEYGEN_TTS_URL','https://api.heygen.com/v3/voices/speech')
+    # Emiliano usa el motor predeterminado de su voz. No sustituir sin autorización.
+    url=os.getenv('HEYGEN_TTS_URL','https://api.heygen.com/v1/audio/text_to_speech')
     payload={'text':text,'voice_id':os.getenv('HEYGEN_VOICE_ID',DEFAULT_VOICE),'speed':1.0}
     resp=requests.post(url,headers={'X-Api-Key':os.environ['HEYGEN_API_KEY']},json=payload,timeout=180)
     if not resp.ok:raise PipelineError(f'Error de voz HeyGen ({resp.status_code}): revisar cuenta/voz/plan')
