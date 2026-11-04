@@ -165,27 +165,53 @@ def plan_story(data:dict,audio_seconds:float|None=None)->dict:
       'scenes':scenes,
     }
 
-def get_audio(text:str,out:Path)->dict:
-    """Una sola solicitud al servicio de voz, si el usuario configura pago y token."""
-    if not os.getenv('HEYGEN_API_KEY'):raise PipelineError('Falta HEYGEN_API_KEY para usar a Emiliano')
-    if os.getenv('GENERACION_PAGADA_AUTORIZADA')!='SI':
-        raise PipelineError('Producción detenida: GENERACION_PAGADA_AUTORIZADA no es SI')
+def get_audio(text: str, out: Path) -> dict:
+    """Genera una sola voz por HeyGen v3 y falla de forma segura si la voz no es compatible.
+
+    La ruta /v3/voices/speech requiere una voz con soporte starfish. La voz
+    elegida Emiliano puede no estar disponible en esa API; NO sustituirla.
+    """
+    if not os.getenv('HEYGEN_API_KEY'):
+        raise PipelineError('Falta HEYGEN_API_KEY para generar la voz')
+    if os.getenv('GENERACION_PAGADA_AUTORIZADA') != 'SI':
+        raise PipelineError('Producción detenida: falta autorización de gasto')
+    if not 1 <= len(text) <= 5000:
+        raise PipelineError('Guion fuera del límite de HeyGen (1 a 5000 caracteres)')
     import requests
-    # Emiliano usa el motor predeterminado de su voz. No sustituir sin autorización.
-    url=os.getenv('HEYGEN_TTS_URL','https://api.heygen.com/v1/audio/text_to_speech')
-    payload={'text':text,'voice_id':os.getenv('HEYGEN_VOICE_ID',DEFAULT_VOICE),'speed':1.0}
-    resp=requests.post(url,headers={'X-Api-Key':os.environ['HEYGEN_API_KEY']},json=payload,timeout=180)
-    if not resp.ok:raise PipelineError(f'Error de voz HeyGen ({resp.status_code}): revisar cuenta/voz/plan')
-    value=resp.json()
-    blob=value.get('data',value)
-    audio_url=blob.get('audio_url') or blob.get('audioUrl') or blob.get('url')
-    if not audio_url:raise PipelineError('La API de voz no proporcionó URL de audio; no se rehace la solicitud')
-    u=urlparse(audio_url)
-    if u.scheme!='https':raise PipelineError('Enlace de audio no HTTPS')
-    voice=requests.get(audio_url,timeout=90)
-    voice.raise_for_status()
-    out.write_bytes(voice.content)
-    return {'duration':audio_length(out),'word_timestamps':blob.get('word_timestamps')}
+    # Ruta documentada para voces compatibles con starfish. No se usa el endpoint v1 retirado.
+    url = 'https://api.heygen.com/v3/voices/speech'
+    payload = {
+        'text': text,
+        'voice_id': os.getenv('HEYGEN_VOICE_ID', DEFAULT_VOICE),
+        'speed': 1.0,
+        'language': 'es',
+    }
+    try:
+        resp = requests.post(url, headers={'X-Api-Key': os.environ['HEYGEN_API_KEY']},
+                             json=payload, timeout=180)
+    except requests.RequestException as exc:
+        raise PipelineError('No fue posible contactar el servicio de voz; no se reintenta para evitar dobles cargos') from exc
+    if not resp.ok:
+        if resp.status_code in (400, 404, 422):
+            raise PipelineError('HeyGen rechazó la voz o solicitud. La voz Emiliano podría no ser compatible con /v3/voices/speech; revisa GET /v3/voices?engine=starfish. No se sustituye la voz.')
+        raise PipelineError('Error de HeyGen (' + str(resp.status_code) + '); se detiene sin reintentos')
+    try:
+        body = resp.json()
+        data = body.get('data', body)
+        if not isinstance(data, dict):
+            raise ValueError('Datos de respuesta no válidos')
+        audio_url = data.get('audio_url') or data.get('audioUrl') or data.get('url')
+    except (ValueError, AttributeError, TypeError) as exc:
+        raise PipelineError('HeyGen devolvió una respuesta inválida; no se repite la generación') from exc
+    if not isinstance(audio_url, str) or urlparse(audio_url).scheme != 'https':
+        raise PipelineError('HeyGen no devolvió una URL HTTPS válida; no se repite la generación')
+    try:
+        audio = requests.get(audio_url, timeout=90)
+        audio.raise_for_status()
+        out.write_bytes(audio.content)
+    except requests.RequestException as exc:
+        raise PipelineError('No se pudo descargar el audio; no se repite la generación') from exc
+    return {'duration': audio_length(out), 'word_timestamps': data.get('word_timestamps')}
 
 def timecode_srt(v:float)->str:
     n=int(round(v*1000));h=n//3600000;m=(n//60000)%60;s=(n//1000)%60;ms=n%1000
