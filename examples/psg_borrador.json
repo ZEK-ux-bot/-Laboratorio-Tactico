@@ -1,0 +1,100 @@
+{
+  "demo_only": true,
+  "candidates": [
+    {
+      "title": "Por qué un córner puede cambiar un partido",
+      "competition": "Champions League",
+      "reason": "Balón parado y segunda jugada",
+      "source_urls": []
+    },
+    {
+      "title": "Qué hace una presión alta bien coordinada",
+      "competition": "Premier League",
+      "reason": "Presión y recuperaciones",
+      "source_urls": []
+    },
+    {
+      "title": "Cómo superar un bloque bajo",
+      "competition": "LaLiga",
+      "reason": "Estructura ofensiva",
+      "source_urls": []
+    },
+    {
+      "title": "El valor táctico de un rebote",
+      "competition": "Serie A",
+      "reason": "Segundas acciones",
+      "source_urls": []
+    },
+    {
+      "title": "Por qué un lateral entra al medio",
+      "competition": "Bundesliga",
+      "reason": "Superioridad interior",
+      "source_urls": []
+    }
+  ],
+  "selected": {
+    "title": "PSG 6-0: el detalle de los cuatro goles tempranos",
+    "match": "Villarreal CF vs Paris Saint-Germain",
+    "date": "2026-11-03",
+    "score": "0-6",
+    "voice_script": "¿Vieron lo que hizo el PSG contra el Villarreal? Le metió seis, sí, pero fíjate en esto: para el minuto diecisiete, ya llevaba cuatro. El primero vino de un córner: Pacho desvía la pelota y João Neves aprovecha. Tres minutos después, el PSG aprieta arriba, recupera y Akliouche encuentra a Doué para el segundo. Aquí está el detalle: cuando pierdes la pelota en una salida complicada, a veces no alcanzas a acomodar la defensa. En el trece, Neves remata, su disparo es bloqueado y Mayulu aprovecha el rebote. Al diecisiete, otra asistencia de Akliouche termina en gol de Fabián Ruiz. Ojo: no todos esos goles salieron de la misma presión. Hubo un córner, un rebote y ataques rápidos. ¿Tú con qué te quedas: la presión o la eficacia?",
+    "sources": [
+      "https://www.psg.fr/es/content/cronica-el-paris-saint-germain-consigue-una-victoria-record-ante-villarreal-cf-uefa-champions-league-2026-2027",
+      "https://www.psg.fr/es/partidas/futbol-masculino/20262027/villarreal-vs-paris-2026-11-03",
+      "https://villarrealcf.es/es/derrota-ante-el-psg/"
+    ],
+    "verification_notes": "Cronología basada en crónicas públicas. Las posiciones y movimientos son ilustrativos; NO equivalen a tracking ni análisis completo revisado. Es un ejemplo técnico, no aprobar para publicación sin revisión.",
+    "positions_are_verified": false,
+    "scenes": [
+      {
+        "concept": "intro",
+        "headline": "CUATRO TAN RÁPIDO",
+        "caption": "PSG 6 · VILLARREAL 0",
+        "insight": "17 MINUTOS DECISIVOS",
+        "label": "CHAMPIONS · 3 NOV"
+      },
+      {
+        "concept": "balon_parado",
+        "headline": "PRIMER GOL",
+        "caption": "NEVES APROVECHA EL CÓRNER",
+        "insight": "MINUTO 09 · BALÓN PARADO",
+        "label": "GOL 01"
+      },
+      {
+        "concept": "presion",
+        "headline": "SEGUNDO GOL",
+        "caption": "PRESIÓN Y RECUPERACIÓN",
+        "insight": "MINUTO 12 · DOUÉ",
+        "label": "GOL 02"
+      },
+      {
+        "concept": "transicion",
+        "headline": "NO DA TIEMPO",
+        "caption": "SALIR BAJO PRESIÓN CUESTA",
+        "insight": "EL RIVAL NO SE ORGANIZA",
+        "label": "EL MECANISMO"
+      },
+      {
+        "concept": "rebote",
+        "headline": "TERCER GOL",
+        "caption": "MAYULU ATACA EL RECHACE",
+        "insight": "MINUTO 13 · REBOTE",
+        "label": "GOL 03"
+      },
+      {
+        "concept": "comparacion",
+        "headline": "CUARTO GOL",
+        "caption": "FABIÁN CONVIERTE EL CUARTO",
+        "insight": "MINUTO 17 · EFICACIA",
+        "label": "GOL 04"
+      },
+      {
+        "concept": "cierre",
+        "headline": "HAY UN MATIZ",
+        "caption": "NO TODOS FUERON POR PRESIÓN",
+        "insight": "PRESIÓN Y SEGUNDAS JUGADAS",
+        "label": "CONCLUSIÓN"
+      }
+    ]
+  }
+}
