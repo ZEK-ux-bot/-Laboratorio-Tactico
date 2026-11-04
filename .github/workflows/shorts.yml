@@ -1,0 +1,70 @@
+name: Laboratorio Táctico · Shorts automáticos
+on:
+  workflow_dispatch:
+    inputs:
+      demo:
+        description: 'Prueba gratuita sin APIs (true/false)'
+        required: false
+        default: 'true'
+  schedule:
+    - cron: '15 9 * * 1,3,5'
+      timezone: 'America/Mexico_City'
+permissions:
+  contents: read
+concurrency:
+  group: laboratorio-tactico-production
+  cancel-in-progress: false
+jobs:
+  short:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: gpt-6-astra
+      HEYGEN_API_KEY: ${{ secrets.HEYGEN_API_KEY }}
+      HEYGEN_VOICE_ID: 70bc24b8126c446c8cf50fc1a01eb834
+      GENERACION_PAGADA_AUTORIZADA: ${{ vars.GENERACION_PAGADA_AUTORIZADA }}
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Instalar FFmpeg y Python
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install -r requirements.txt
+      - name: Ejecutar pruebas
+        run: python -m unittest discover -s tests -v
+      - name: Evitar gastos sin autorización
+        id: gate
+        run: |
+          if [ '${{ github.event_name }}' = 'workflow_dispatch' ] && [ '${{ inputs.demo }}' = 'true' ]; then
+            echo 'mode=demo' >> "$GITHUB_OUTPUT"
+          elif [ "$GENERACION_PAGADA_AUTORIZADA" = 'SI' ] && [ -n "$OPENAI_API_KEY" ] && [ -n "$HEYGEN_API_KEY" ]; then
+            echo 'mode=full' >> "$GITHUB_OUTPUT"
+          else
+            echo 'mode=skip' >> "$GITHUB_OUTPUT"
+            echo 'Faltan secretos o permiso de gasto. Ejecución sin coste de APIs.'
+          fi
+      - name: Demostración sin gasto
+        if: steps.gate.outputs.mode == 'demo'
+        run: python src/automation.py --mode demo --size 360x640 --fps 15
+      - name: Producción original HD sin marca de agua
+        if: steps.gate.outputs.mode == 'full'
+        run: python src/automation.py --mode full --size 1080x1920 --fps 30
+      - name: Subir video privado a YouTube (si autorizado)
+        if: steps.gate.outputs.mode == 'full' && env.YOUTUBE_REFRESH_TOKEN != '' && env.YOUTUBE_CLIENT_ID != '' && env.YOUTUBE_CLIENT_SECRET != ''
+        run: python src/upload_private_youtube.py output/short_sin_marca.mp4 output/descripcion_youtube.txt
+      - name: Conservar video, fuentes y guion
+        if: always() && steps.gate.outputs.mode != 'skip'
+        uses: actions/upload-artifact@v4
+        with:
+          name: laboratorio-tactico-${{ github.run_number }}
+          path: output/
+          if-no-files-found: warn
+          retention-days: 30
