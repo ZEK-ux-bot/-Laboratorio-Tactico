@@ -1,107 +1,66 @@
-# Laboratorio Táctico — Producción automática de Shorts
+# Laboratorio Táctico — Shorts GRATIS, automáticos y sin marca de agua
 
-Un proyecto reproducible para preparar Shorts/Reels de análisis de fútbol con narración generada por IA y **MP4 sin marca de agua**. Ningún fotograma del partido, foto protegida ni escudo es necesario. Las pizarras son **ilustraciones didácticas**, no reconstrucciones exactas.
+**Actualizado el 4 de noviembre de 2026.** Este repositorio ya NO necesita ni utiliza **OpenAI API, HeyGen API ni facturación** para crear sus borradores programados. Sigue usando GitHub Actions, Python, noticias RSS públicas, **Qwen local mediante Ollama**, **Piper TTS** con voz mexicana y **FFmpeg**.
 
-## Qué está automatizado en el código
+**Resultado:** un MP4 1080×1920 a 30 fps (animación original calculada a 720p/18 fps y escalada con FFmpeg), narración, subtítulos, cinco ideas, guion, enlace a noticia y fuentes en un ZIP de **Artifacts**. El archivo de video es original y **no contiene marca de agua**. El programa **NO publica** en YouTube, TikTok o Instagram.
 
-1. Investigación de actualidad con búsqueda web de OpenAI; entrega **5 ideas** y selecciona una.
-2. Validación **mínima**: dos URLs y al menos una fuente oficial (si falla, **no se produce**).
-3. Guion en español, mexicano tranquilo y explicativo.
-4. Voz de Emiliano de HeyGen con su voice ID oficial del proyecto (solo si la cuenta/API lo permite; sin sustitución silenciosa).
-5. Pizarra original con fichas y trayectorias **genéricas etiquetadas como ilustrativas**.
-6. Video 1080×1920, 30 FPS con FFmpeg; subtítulos estimados, descripción y fuentes.
-7. Guardado en GitHub Actions **Artifacts** para revisión. Se puede activar una subida a YouTube **privada** conectando credenciales; no publica públicamente.
+**AVISO PERIODÍSTICO:** la investigación gratuita se limita a **titulares RSS** y URLs, no confirma todo lo que dicen los artículos. El video explica un **principio táctico general** relacionado con ese tema y **no afirma** que sus movimientos ocurrieron en un partido concreto. Si no hay RSS reciente disponible, produce una lección **ATEMPORAL** claramente identificada. Siempre revisar antes de publicar públicamente.
 
-**IMPORTANTE:** La comprobación de URLs y una fuente oficial no equivalen a verificar cada afirmación. El sistema NO dispone de tracking real de los jugadores. Antes de publicación pública sigue siendo necesaria una revisión editorial. La publicación en Instagram/TikTok tampoco está integrada. No prometemos producción ni subida hasta instalar el flujo y configurar API, autorización de gasto y cuentas.
+## Qué hace solo
 
-## Ejecutar sin gastar ni tener API (prueba funcional)
+1. Lunes, miércoles y viernes a las **09:15, hora de Ciudad de México**, GitHub ejecuta el workflow (puede retrasarse).
+2. Busca hasta cinco titulares recientes de fútbol europeo mediante Google Noticias RSS. Ignora entradas viejas, rumores, lesiones y pronósticos. Si hay pocas noticias completa cinco propuestas con temas generales, sin fingir que son noticias.
+3. Selecciona una nota reciente o un tema didáctico atemporal.
+4. Redacta una explicación del **concepto táctico**, con **Qwen2.5 1.5B ejecutándose localmente**. No le proporciona al modelo nombres de equipos ni hechos del partido para reducir invenciones. Si Ollama no funciona, usa una explicación original fija.
+5. Genera voz con **Piper es_MX-claude-high** (no es la voz Emiliano). Los archivos de la voz se descargan de Hugging Face durante la ejecución, sin cuenta ni API de pago.
+6. Renderiza pizarras didácticas originales con Python y FFmpeg. Inserta subtítulos **estimados** (no alineados fonéticamente); el video final es 1080×1920, 30 fps.
+7. Guarda un ZIP de borrador en **Actions → ejecución → Artifacts**, con una retención de **cinco días** para evitar acumulación de almacenamiento.
+8. **No publica ni hace gastos de APIs**. No toma clips de televisión ni elimina marcas de terceros.
 
-Instalar Python 3.12+, FFmpeg y las librerías:
+## Cómo probarlo ahora mismo en GitHub
+
+1. Abre: https://github.com/ZEK-ux-bot/-Laboratorio-Tactico/actions/workflows/shorts.yml
+2. Haz clic en **Run workflow**; rama `main`.
+3. En **demo**, elige **false**. **ANTES false significaba producción con APIs de pago; AHORA false significa Short GRATIS completo**. Ni el workflow ni el programa de pago antiguo llaman a OpenAI/HeyGen.
+4. Haz clic en **Run workflow**. Al terminar abre la ejecución, sección **Artifacts**, y descarga `laboratorio-tactico-N`. Contiene `short_sin_marca.mp4`, `voz_piper_mexico.wav`, `subtitulos.srt`, `narracion.txt`, `investigacion_5_ideas.json` y `FUENTES_Y_REVISION.txt`.
+5. **demo=true** sigue produciendo un MP4 técnico breve sin narración para probar renderizado; es el modo de cada actualización de código.
+
+Las ejecuciones programadas harán `demo=false` automáticamente. La prueba del primer video gratis con voz debe terminar **en verde** antes de afirmar que toda la producción está validada. No se garantiza entrega si fallan las descargas públicas, se alcanza un límite externo o falla un runner.
+
+## Seguridad y facturación
+
+- El repositorio actual es **público**. GitHub indica que los **runners estándar para repositorios públicos** son gratuitos, dentro de sus políticas y límites; las cuotas de almacenamiento de artifacts pueden tener costes al exceder el plan. **Mantén el repositorio público y no actives runners grandes de pago** si buscas cero costes. Revisa facturación en GitHub.
+- Los secretos `OPENAI_API_KEY` y `HEYGEN_API_KEY` que configuraste **no se necesitan**. No se referencian en el workflow. Si prefieres, puedes **eliminarlos** desde **Settings → Secrets and variables → Actions**; eliminarlos no los revoca en el proveedor, eso debe hacerse también allí. La variable `GENERACION_PAGADA_AUTORIZADA` se ignora.
+- `src/automation.py --mode full` (la versión previa de pago) ahora **se detiene siempre** para evitar cargos. Solo conserva el modo `demo` y algunas funciones técnicas que reutiliza `free_pipeline.py`.
+- La instalación de Ollama descarga un instalador público de https://ollama.com e instala un modelo local; no usa un proveedor de inferencia alojado. Si no funciona, el programa sigue con plantillas de respaldo, sin pago.
+- Piper se ejecuta **localmente**. Voz: https://huggingface.co/rhasspy/piper-voices/tree/main/es/es_MX/claude/high (dataset Apache-2.0; atribución en descripción).
+- Qwen2.5:1.5B está disponible públicamente y se ejecuta en local. Solo propone una explicación general; **no se usa para comprobar resultados reales**.
+- Usa una noticia RSS solo como **gancho** y fuente rastreable; nada de marcadores, fechas de partidos, estadísticas, tracking ni jugadas inventadas.
+
+## Ejecutarlo manualmente en una computadora Linux
+
+Necesitas Python 3.12, FFmpeg, conexión a internet y una fuente TrueType.
 
 ```bash
+sudo apt-get install -y ffmpeg fonts-dejavu-core
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
-python src/automation.py --mode demo --size 360x640 --fps 15
+python src/free_pipeline.py --no-ollama --size 1080x1920 --fps 30
 ```
 
-Archivos de salida: `output/short_sin_marca.mp4`, `story.json`, `FUENTES_Y_REVISION.txt`, guion y descripción. Es una **demostración silenciosa** (con tema PSG-Villarreal) porque no tiene una nueva voz pagada ni archivos de audio locales.
+`--no-ollama` hace un Short gratuito con guion de respaldo y voz Piper; omitir esa opción habilita la IA local solo si `OLLAMA_URL` está configurada y el servidor local está activo. No uses `OPENAI_API_KEY` ni `HEYGEN_API_KEY`.
 
-Con una voz ya adquirida y descargada puedes probar narración + subtítulos sin generar costos nuevos:
+## Costes y calidad: limitaciones reales
 
-```bash
-python src/automation.py --mode demo --voice-file /ruta/a/emiliano.wav --size 1080x1920 --fps 30
-```
+- Gratis aquí significa **sin llamadas a APIs pagadas** y ejecución en un runner estándar del repo público. No prometemos que plataformas externas mantengan ilimitada y gratis su disponibilidad. RSS, modelos y voz necesitan descargas y conexión; pueden fallar.
+- El tono de voz Claude de Piper es **diferente** a Emiliano. La calidad del modelo local, acento y pronunciación tienen que escucharse.
+- El texto y subtítulos necesitan revisión humana. No hay edición automática de jugadas reales ni identificación de momentos de un encuentro.
+- La **subida o publicación pública automática** no se ha conectado. Los MP4 son **borradores descargables**, no publicaciones ya hechas.
 
-**Nunca** uses un archivo de otra persona sin tener derecho a esa voz/grabación.
+## Recursos oficiales
 
-## Instalar la automatización en GitHub (una sola vez)
-
-1. Proyecto instalado en el repositorio `ZEK-ux-bot/-Laboratorio-Tactico`, creado como **público**. Si quieres guardar cualquier información de producción privada, hazlo privado desde Settings → General → Danger Zone. Nunca subas claves, tokens ni videos con derechos al código.
-2. En **Settings → Secrets and variables → Actions**, crea estos secrets: `OPENAI_API_KEY`, `HEYGEN_API_KEY`. Conecta la cuenta de pago/API que tenga derecho a voz Emiliano y los permisos necesarios. Nunca pegues claves en código ni en el chat.
-3. En **Variables**, establece `GENERACION_PAGADA_AUTORIZADA=SI` solamente cuando hayas definido un presupuesto de uso de las APIs. Dejar esa variable vacía significa **no ejecutar ninguna tarea de pago**. Tu suscripción a ChatGPT no es crédito de OpenAI API.
-4. Opcional para borradores automáticos privados de YouTube: secrets `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REFRESH_TOKEN`, obtenidos por OAuth con permiso `youtube.upload`. Nunca configurar credenciales de publicación públicas por defecto.
-5. Un **push de código** inicia una prueba DEMO sin coste, y **Actions → Laboratorio Táctico · Shorts automáticos → Run workflow** con `demo=true` permite repetirla. Descarga el resultado desde **Artifacts**. Las ejecuciones programadas no producen ni generan gastos mientras no se cumplan todos los requisitos de claves y autorización.
-
-## Horario
-
-- Lunes, miércoles y viernes, **9:15 a. m. America/Mexico_City**, en `.github/workflows/shorts.yml`. GitHub puede retrasar ejecuciones y requiere repositorio activo, además de habilitar Actions. Las tareas programadas corren sobre la rama predeterminada.
-- Radar ChatGPT de cinco temas a las 8:00 a. m. diario (tarea separada, ya existente). El repositorio realiza su **propia búsqueda** para no depender de la memoria de una conversación.
-
-## Arquitectura
-
-```text
-GitHub Actions (3x/semana)
-    │
-    ├── Buscar 5 ideas con web_search + OpenAI Responses API
-    │            │
-    │            └── Si faltan fuentes suficientes → detener
-    │
-    ├── Guion seleccionado (es-MX, relato relajado)
-    ├── HeyGen text-to-speech → Emiliano, 1 solicitud
-    ├── Calcular duración real del WAV con ffprobe
-    ├── Diagramas didácticos etiquetados con disclaimer
-    ├── Render Python/Pillow + FFmpeg 1080p sin watermark
-    ├── SRT estimado (revisar sincronía) + MP4 final
-    ├── Guardar video + investigación + fuentes como Artifacts
-    └── (Opcional) Subir borrador privado a YouTube
-```
-
-## Seguridad, autenticidad y derechos
-
-- No elimina marcas de agua de archivos ajenos; genera video original sin imponer una.
-- Siempre distingue hechos oficiales de explicaciones tentativas; etiqueta la pizarra como ilustrativa.
-- Las fuentes oficiales son un requisito necesario, pero no suficiente para asegurar que las inferencias causales sean ciertas. No publicar a ciegas.
-- No incorpora fotos ni metraje televisivo protegido por derechos por defecto.
-- La función de voz requiere autenticación y posiblemente saldo/pago. La voz Emiliano se ha probado en la app, pero todavía NO se ha validado la integración directa de API con esa voz. Si el proveedor rechaza la voz/endpoint/plan, se detiene sin reemplazarla o intentar muchas regeneraciones.
-- Los subtítulos se sincronizan de forma **estimada** por cantidad de caracteres: no son marcas reales de tiempos de las palabras. Revisar una vez reproducidos.
-- GitHub puede cobrar minutos/almacenamiento según el plan y el tipo de repositorio. La API de investigación y la voz se cobran por separado según sus tarifas. No hay tope monetario garantizado por este proyecto: antes de activar gastos, configura límites/alertas en los proveedores.
-- La **publicación pública** requiere conectar y autorizar cada plataforma (YouTube/Instagram/TikTok) y revisar derechos y veracidad. Este proyecto la deja intencionadamente desactivada.
-
-## Fuentes técnicas
-
-- Documentación GitHub Actions: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
-- OpenAI Responses API web_search: https://developers.openai.com/api/docs/guides/tools-web-search
-- HeyGen API TTS: https://www.heygen.com/blog/heygen-api-guide
-- YouTube API upload OAuth: https://developers.google.com/youtube/data/guides/authentication
-
-## Notas de producción
-
-**Por qué no usamos clips generativos:** los movimientos exactos de un partido no pueden reproducirse fielmente solo con una descripción de texto. Una pizarra ilustrativa bien etiquetada enseña principios sin presentar ficción como observación.
-
-**Próximas mejoras opcionales:** almacenar historial de temas para evitar duplicados, alinear subtítulos con timestamps reales si API los entrega, transiciones más finas, panel de revisión y publicación multicanal OAuth.
-
-
-## Estado de compatibilidad de voz (noviembre de 2026)
-
-La integración utiliza POST https://api.heygen.com/v3/voices/speech para generar una narración. Esta API requiere voces compatibles con starfish. La voz Emiliano seleccionada en la app figuraba como orca, por lo que su uso desde la API v3 no está confirmado. El programa detiene la ejecución si la voz es rechazada: NO cambia la voz por otra sin autorización.
-
-## Pasos para activar una ejecución completa
-
-1. Crear una clave de OpenAI API (https://platform.openai.com/api-keys) y una clave de HeyGen de tu cuenta.
-2. En GitHub > Settings > Secrets and variables > Actions, guardar los secretos OPENAI_API_KEY y HEYGEN_API_KEY. Nunca subirlos al repositorio ni enviarlos por chat.
-3. Configurar límites de gasto y alertas en ambos proveedores. Este proyecto por sí solo no impone un tope monetario verificable.
-4. Solo después de aprobar el presupuesto, añadir la variable GENERACION_PAGADA_AUTORIZADA con valor SI. Sin ella el workflow omite llamadas de pago.
-5. En Actions ejecutar manualmente el workflow con demo=true para revisar el funcionamiento sin claves ni gastos; demo=false habilita el modo completo únicamente si hay secretos y aprobación.
-6. Opcionalmente, para subir borradores PRIVADOS de YouTube, añadir los secretos OAuth de YouTube y la variable SUBIR_BORRADOR_YOUTUBE=SI. Esta opción está desactivada por defecto, y no existe publicación pública automática.
-
-El sistema exporta video original sin marca de agua, pero sus diagramas son ilustrativos; se requiere revisión editorial de hechos, animaciones y subtítulos antes de publicar. Instagram y TikTok aún no están integrados. La API se factura por separado de ChatGPT Plus.
+- GitHub Actions: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+- Piper voces mexicanas: https://huggingface.co/rhasspy/piper-voices/tree/main/es/es_MX/claude/high
+- Piper: https://pypi.org/project/piper-tts/
+- Qwen2.5: https://ollama.com/library/qwen2.5
+- FFmpeg: https://ffmpeg.org/
