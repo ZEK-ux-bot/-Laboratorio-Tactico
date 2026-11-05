@@ -1,4 +1,4 @@
-name: Laboratorio Táctico · Shorts automáticos
+name: Laboratorio Táctico · Shorts GRATIS
 on:
   push:
     branches: [main]
@@ -11,74 +11,85 @@ on:
   workflow_dispatch:
     inputs:
       demo:
-        description: 'Demo local sin gastos ni APIs (true/false)'
+        description: 'true = prueba rápida sin voz; false = video GRATIS con voz'
         required: false
         default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
   schedule:
     - cron: '15 9 * * 1,3,5'
       timezone: 'America/Mexico_City'
 permissions:
   contents: read
 concurrency:
-  group: laboratorio-tactico-production
+  group: laboratorio-tactico-gratis
   cancel-in-progress: false
 jobs:
   short:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      OPENAI_MODEL: gpt-5.4-mini
-      HEYGEN_API_KEY: ${{ secrets.HEYGEN_API_KEY }}
-      HEYGEN_VOICE_ID: 70bc24b8126c446c8cf50fc1a01eb834
-      GENERACION_PAGADA_AUTORIZADA: ${{ vars.GENERACION_PAGADA_AUTORIZADA }}
-      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-      SUBIR_BORRADOR_YOUTUBE: ${{ vars.SUBIR_BORRADOR_YOUTUBE }}
+      OLLAMA_URL: http://127.0.0.1:11434
+      OLLAMA_MODEL: qwen2.5:1.5b
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: pip
-      - name: Evitar gastos no autorizados
+      - name: Elegir modo SIN APIs de pago
         id: gate
+        shell: bash
         run: |
           if [ '${{ github.event_name }}' = 'push' ] || { [ '${{ github.event_name }}' = 'workflow_dispatch' ] && [ '${{ inputs.demo }}' = 'true' ]; }; then
             echo 'mode=demo' >> "$GITHUB_OUTPUT"
-          elif [ "$GENERACION_PAGADA_AUTORIZADA" = 'SI' ] && [ -n "$OPENAI_API_KEY" ] && [ -n "$HEYGEN_API_KEY" ]; then
-            echo 'mode=full' >> "$GITHUB_OUTPUT"
           else
-            echo 'mode=skip' >> "$GITHUB_OUTPUT"
-            echo 'Faltan claves o autorización de gasto; no se genera ni se cobra.'
+            echo 'mode=free' >> "$GITHUB_OUTPUT"
           fi
-      - name: Instalar dependencia FFmpeg + Python
-        if: steps.gate.outputs.mode != 'skip'
+          echo 'No se usan OPENAI_API_KEY, HEYGEN_API_KEY ni GENERACION_PAGADA_AUTORIZADA.'
+      - name: Instalar FFmpeg y Python
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y ffmpeg fonts-dejavu-core
-          pip install -r requirements.txt
-      - name: Probar módulo sin APIs
-        if: steps.gate.outputs.mode != 'skip'
+          python -m pip install -r requirements.txt
+      - name: Probar seguridad y funciones
         run: python -m unittest discover -s tests -v
-      - name: Crear demo sin coste
+      - name: Vista previa técnica sin gastos ni voz
         if: steps.gate.outputs.mode == 'demo'
         run: |
           python src/automation.py --mode demo --size 360x640 --fps 15
           test -s output/short_sin_marca.mp4
+      - name: Instalar modelo de IA LOCAL gratis (con alternativa si falla)
+        if: steps.gate.outputs.mode == 'free'
+        shell: bash
+        run: |
+          set -o pipefail
+          if curl -fsSL https://ollama.com/install.sh | sh; then
+            (nohup ollama serve >/tmp/laboratorio-ollama.log 2>&1 &) || true
+            for i in {1..20}; do
+              if curl -fsS http://127.0.0.1:11434/api/tags >/dev/null; then
+                break
+              fi
+              sleep 2
+            done
+            ollama pull qwen2.5:1.5b || echo '::warning::Ollama pull falló: se utilizará un guion original de respaldo.'
+          else
+            echo '::warning::Ollama no se pudo instalar: se utilizará un guion original de respaldo.'
+          fi
+      - name: Crear Short GRATIS con voz mexicana, fuentes y subtítulos
+        if: steps.gate.outputs.mode == 'free'
+        run: |
+          python src/free_pipeline.py --size 1080x1920 --fps 30
+          test -s output/short_sin_marca.mp4
+          test -s output/voz_piper_mexico.wav
           ffprobe -v error -show_entries stream=width,height -of csv=p=0 output/short_sin_marca.mp4
-      - name: Crear Short completo sin marca de agua
-        if: steps.gate.outputs.mode == 'full'
-        run: python src/automation.py --mode full --size 1080x1920 --fps 30
-      - name: Subir borradores privados a YouTube (opcional)
-        if: steps.gate.outputs.mode == 'full' && env.SUBIR_BORRADOR_YOUTUBE == 'SI' && env.YOUTUBE_REFRESH_TOKEN != '' && env.YOUTUBE_CLIENT_ID != '' && env.YOUTUBE_CLIENT_SECRET != ''
-        run: python src/upload_private_youtube.py output/short_sin_marca.mp4 output/descripcion_youtube.txt
-      - name: Guardar el MP4, guion, cinco ideas y fuentes
-        if: always() && steps.gate.outputs.mode != 'skip'
+      - name: Guardar video y fuentes para REVISIÓN editorial (no publicar)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: laboratorio-tactico-${{ github.run_number }}
           path: output/
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 5
