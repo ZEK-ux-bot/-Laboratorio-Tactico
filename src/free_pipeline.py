@@ -145,8 +145,16 @@ def collect_news(now: dt.datetime | None = None) -> list[dict]:
 
 def choose_topic(news: list[dict], today: dt.date) -> tuple[list[dict], dict]:
     if news:
-        shortlisted = news[:5]
-        pick = shortlisted[today.toordinal() % len(shortlisted)]
+        real = news[:5]
+        shortlisted = list(real)
+        # Siempre guardar 5 candidatos aun cuando el RSS traiga solo 1-4.
+        for topic, title, _ in THEMES:
+            if len(shortlisted) >= 5:
+                break
+            shortlisted.append({"title": title, "topic": topic,
+                                "publisher": "Leccion didactica original", "url": "",
+                                "date": today.isoformat(), "kind": "atemporal"})
+        pick = real[today.toordinal() % len(real)]
         return shortlisted, {**pick, "kind": "titular_de_actualidad"}
     fallback = [
         {"title": title, "topic": topic, "publisher": "Leccion didactica original",
@@ -302,7 +310,17 @@ def build(argv: list[str] | None = None) -> int:
         encoding="utf8",
     )
     video = out / "short_sin_marca.mp4"
-    base.run_render(out / "story.json", video, voice, args.size, args.fps)
+    # Renderizar a 720p/18 fps para no agotar el tiempo del runner gratuito.
+    # Escalar el MP4 FINAL a 1080x1920 / 30 fps, sin marcas de agua.
+    intermediate = out / "intermedio_animado.mp4"
+    base.run_render(out / "story.json", intermediate, voice, "720x1280", 18)
+    subprocess.run([
+        "ffmpeg", "-y", "-v", "error", "-i", str(intermediate),
+        "-vf", "scale=" + args.size.replace("x", ":") + ":flags=lanczos,fps=" + str(args.fps),
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "21",
+        "-pix_fmt", "yuv420p", "-c:a", "copy", "-movflags", "+faststart",
+        str(video)], check=True, timeout=900)
+    intermediate.unlink(missing_ok=True)
     subs = out / "subtitulos.srt"
     base.make_subtitles(narration, duration, subs)
     if not args.skip_subtitles:
