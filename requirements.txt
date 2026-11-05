@@ -1,5 +1,5 @@
+# Solo bibliotecas gratuitas de código abierto; sin APIs de pago
 Pillow>=10,<13
 requests>=2.31,<3
-openai>=2,<4
-google-api-python-client>=2.130,<3
-google-auth>=2.30,<4
+feedparser>=6.0.11,<7
+piper-tts>=1.3,<2
