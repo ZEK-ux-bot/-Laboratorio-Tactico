@@ -256,10 +256,7 @@ def main()->int:
     opts=p.parse_args()
     od=opts.output_dir;od.mkdir(parents=True,exist_ok=True)
     if opts.mode=='full':
-        if os.getenv('GENERACION_PAGADA_AUTORIZADA')!='SI':
-            raise PipelineError('Falta autorización de gasto recurrente (GENERACION_PAGADA_AUTORIZADA=SI). Se evita cargo.')
-        data=research()
-        verify_brief(data)
+        raise PipelineError('Modo de pago DESACTIVADO. Usa python src/free_pipeline.py: no usa OpenAI ni HeyGen.')
     else:
         data=demo_brief();verify_brief(data)
     (od/'investigacion_5_ideas.json').write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf8')
